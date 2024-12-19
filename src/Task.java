@@ -1,15 +1,10 @@
 import java.util.Objects;
 
 public class Task {
-    protected int id;
-    protected String name;
-    protected TaskStatus status;
-    protected String description;
-
-    public Task(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
+    private int id;
+    private String name;
+    private TaskStatus status;
+    private String description;
 
     public String getName() {
         return name;
@@ -30,11 +25,7 @@ public class Task {
     public Task(String name, String description, TaskStatus status) {
         this.name = name;
         this.description = description;
-        this.status = TaskStatus.NEW;
-    }
-
-    public Task() {
-
+        this.status = status;
     }
 
     public int getId() {
@@ -51,8 +42,8 @@ public class Task {
 
     @Override
     public boolean equals(Object o) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
         return id == task.id && Objects.equals(name, task.name) && Objects.equals(status, task.status) && Objects.equals(description, task.description);
     }
@@ -61,9 +52,9 @@ public class Task {
     public String toString() {
         return "Task{" +
                 "id=" + id +
-                ", name='" + name +'\'' +
-                ", status='" + status +'\'' +
-                ", description='" + description +'\'' +
+                ", name='" + name + '\'' +
+                ", status='" + status + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 
