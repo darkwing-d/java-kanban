@@ -1,3 +1,5 @@
+package task;
+
 import java.util.Objects;
 
 public class Subtask extends Task {
@@ -24,5 +26,9 @@ public class Subtask extends Task {
     @Override
     public int hashCode() {
         return Objects.hashCode(epicId);
+    }
+
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 }

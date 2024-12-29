@@ -1,3 +1,5 @@
+package task;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.List;
@@ -21,8 +23,8 @@ public class Epic extends Task {
         super(name, description, TaskStatus.NEW); // статус эпика при создании
     }
 
-    public void cleanSubtaskIds() {
-        subtaskIds.clear();
+    public void clearSubtasks() {
+        subtaskIds.clear(); // Очистить список идентификаторов подзадач
     }
 
     @Override

@@ -1,3 +1,5 @@
+package task;
+
 import java.util.Objects;
 
 public class Task {
@@ -46,6 +48,11 @@ public class Task {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
         return id == task.id && Objects.equals(name, task.name) && Objects.equals(status, task.status) && Objects.equals(description, task.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
     }
 
     @Override
