@@ -8,11 +8,12 @@ import task.TaskStatus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, Subtask> subtasks = new HashMap<>();
     private final HistoryManager historyManager;
     private int generatorId = 0;
 
@@ -21,8 +22,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Task> getTasks() {
-        ArrayList<Task> taskArrayList = new ArrayList<>(tasks.values());
+    public List<Task> getTasks() {
+        List<Task> taskArrayList = new ArrayList<>(tasks.values());
         return taskArrayList;
     }
 
@@ -50,7 +51,6 @@ public class InMemoryTaskManager implements TaskManager {
 
         Epic epic = epics.get(subtask.getEpicId());
         if (epic.getId() == subtask.getId()) {
-        //    throw new IllegalArgumentException("Нельзя добавить эпик в его собственные подзадачи.");
             return null;
         }
 
@@ -92,13 +92,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Epic> getEpics() {
-        ArrayList<Epic> epicArrayList = new ArrayList<>(epics.values());
+    public List<Epic> getEpics() {
+        List<Epic> epicArrayList = new ArrayList<>(epics.values());
         return epicArrayList;
     }
 
-    public ArrayList<Subtask> getSubtasks() {
-        ArrayList<Subtask> subtaskArrayList = new ArrayList<>(subtasks.values());
+    public List<Subtask> getSubtasks() {
+        List<Subtask> subtaskArrayList = new ArrayList<>(subtasks.values());
         return subtaskArrayList;
     }
 
@@ -271,17 +271,3 @@ public class InMemoryTaskManager implements TaskManager {
         return tasks.containsKey(id);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
