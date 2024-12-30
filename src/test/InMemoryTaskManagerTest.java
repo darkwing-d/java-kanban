@@ -2,6 +2,7 @@ package test;
 
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.Epic;
 import task.Subtask;
@@ -14,9 +15,13 @@ class InMemoryTaskManagerTest {
     private TaskManager taskManager;
     private Task originalTask;
 
+    @BeforeEach
+    void setUp() {
+        taskManager = new InMemoryTaskManager();
+    }
+
     @Test
     public void testAddAndGetTask() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         Task task = new Task("Задача 1", "Описание задачи 1", TaskStatus.NEW);
         taskManager.addNewTask(task);
 
@@ -29,7 +34,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testAddAndGetEpic() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         Epic epic = new Epic("Эпик 1", "Описание эпика 1");
         taskManager.addNewEpic(epic);
 
@@ -42,7 +46,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testAddAndGetSubtask() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         Epic epic = new Epic("Эпик 1", "Описание эпика 1");
         taskManager.addNewEpic(epic);
 
@@ -58,21 +61,18 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testGetNonExistentTask() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         Task retrievedTask = taskManager.getTask(999); // Не существующий ID
         assertNull(retrievedTask, "Не существующая задача должна возвращать null");
     }
 
     @Test
     public void testGetNonExistentEpic() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         Epic retrievedEpic = taskManager.getEpic(999); // Не существующий ID
         assertNull(retrievedEpic, "Не существующий эпик должен возвращать null");
     }
 
     @Test
     public void testGetNonExistentSubtask() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         Subtask retrievedSubtask = taskManager.getSubtask(999); // Не существующий ID
         assertNull(retrievedSubtask, "Не существующая подзадача должна возвращать null");
     }
