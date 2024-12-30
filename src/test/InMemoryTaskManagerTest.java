@@ -12,7 +12,7 @@ import task.TaskStatus;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
-    private TaskManager taskManager;
+    private InMemoryTaskManager taskManager;
     private Task originalTask;
 
     @BeforeEach
@@ -79,7 +79,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testTaskIdCollision() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         // Добавляем задачу с заданным ID
         Task taskWithId = new Task("Task 1", "Description 2", TaskStatus.NEW);
         taskManager.addNewTask(taskWithId);
@@ -100,7 +99,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testTaskImmutabilityUponAdding() {
-        taskManager = new InMemoryTaskManager();
         originalTask = new Task("Original Task", "Description of Original Task", TaskStatus.NEW);
 
         // Сохраняем оригинальные значения
