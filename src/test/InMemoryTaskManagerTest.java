@@ -89,7 +89,7 @@ class InMemoryTaskManagerTest {
         Task taskWithGeneratedId = new Task("Task 2", "Description 2", TaskStatus.NEW);
         taskManager.addNewTask(taskWithGeneratedId);
         assertNotNull(taskWithGeneratedId);
-        assertEquals(2, taskWithGeneratedId.getId()); // Убедитесь, что он равен 2 или другому значению, обозначающему сгенерированный ID
+        assertEquals(2, taskWithGeneratedId.getId()); // равен значению, обозначающему сгенерированный ID
 
         // Проверяем, что задачи с заданными ID не конфликтуют
         assertTrue(taskManager.taskExists(1)); // Задача с ID 1 должна существовать

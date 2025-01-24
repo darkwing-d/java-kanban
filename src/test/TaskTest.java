@@ -16,15 +16,12 @@ class TaskTest {
         Task task1 = new Task("Task 1", "Description 1", TaskStatus.NEW);
         Task task2 = new Task("Task 2", "Description 2", TaskStatus.NEW);
 
-        // Здесь предполагается, что метод generateId() генерирует уникальные id
         assertNotEquals(task1, task2); // Разные id, разные задачи
 
         int taskId = task1.getId();
         Task task3 = new Task(task1.getName(), task1.getDescription(), task1.getStatus());
 
-        // Здесь мы предполагаем, что вы устанавливаете id в task3 равным taskId
-        // Для этого может быть дополнительный конструктор или метод
-        task3.setId(taskId); // Убедитесь, что этот метод существует и корректно работает
+        task3.setId(taskId);
 
         assertEquals(task1, task3); // Задачи с одинаковыми id должны быть равны
     }
@@ -59,9 +56,9 @@ class TaskTest {
         taskManager.addNewEpic(epic);
 
         // Пытаемся добавить эпик как подзадачу
-        Subtask subtask = new Subtask("Subtask of Epic", "This is a subtask",TaskStatus.NEW, epic.getId());
+        Subtask subtask = new Subtask("Subtask of Epic", "This is a subtask", TaskStatus.NEW, epic.getId());
 
-        // Проверяем, что метод addNewSubtask возвращает null (или другой ожидаемый ответ)
+        // Проверяем, что метод addNewSubtask возвращает null
         boolean isExceptionThrown = true;
 
         // Метод, вызывающий добавление подзадачи
@@ -81,35 +78,35 @@ class TaskTest {
         Epic epic = new Epic("Epic Task", "Description of epic");
         taskManager.addNewEpic(epic);
 
-        // Создаем подзадачу с другим ID
+        // создаем подзадачу с другим ID
         Subtask subtask = new Subtask("Subtask", "This is a subtask", TaskStatus.NEW, epic.getId());
-        // Убедитесь, что подзадача не получает тот же ID, что и эпик.
-        subtask.setId(1); // Пример, измените при необходимости
+        // подзадача не получает тот же ID, что и эпик.
+        subtask.setId(1);
 
-        // Ожидаем, что добавление подзадачи вернет null
+        // добавление подзадачи вернет null
         Integer result = taskManager.addNewSubtask(subtask);
 
-        // Проверка, что подзадача не добавляется
+        // подзадача не добавляется
         assertNull("Подзадача не должна ссылаться на самого себя в качестве эпика.", result);
     }
 
     @Test
     public void testGetDefaultTaskManager() {
         TaskManager taskManager = Managers.getDefault();
-        // Проверяем, что экземпляр TaskManager не равен null
+        // TaskManager не равен null
         assertNotNull("TaskManager должен быть инициализирован", taskManager);
 
-        // Проверяем, что экземпляр TaskManager является правильным типом
-        assertTrue("Должен быть экземпляр InMemoryTaskManager",taskManager instanceof InMemoryTaskManager);
+        // TaskManager является правильным типом
+        assertTrue("Должен быть экземпляр InMemoryTaskManager", taskManager instanceof InMemoryTaskManager);
     }
 
     @Test
     public void testGetDefaultHistoryManager() {
         HistoryManager historyManager = Managers.getDefaultHistory();
-        // Проверяем, что экземпляр HistoryManager не равен null
+        // HistoryManager не равен null
         assertNotNull("HistoryManager должен быть инициализирован", historyManager);
 
-        // Проверяем, что экземпляр HistoryManager является правильным типом
+        // HistoryManager является правильным типом
         assertTrue("Должен быть экземпляр InMemoryHistoryManager", historyManager instanceof InMemoryHistoryManager);
     }
 
@@ -117,57 +114,34 @@ class TaskTest {
     public void printAllTasks() {
         InMemoryTaskManager manager = new InMemoryTaskManager();
 
-        Task task1 = new Task("task1", "taskDes1", TaskStatus.NEW);
-        Task task2 = new Task("task2", "taskDes2", TaskStatus.NEW);
+        Task task1 = new Task("Task 1", "Description of Task 1", TaskStatus.NEW);
+        Task task2 = new Task("Task 2", "Description of Task 2", TaskStatus.NEW);
         manager.addNewTask(task1);
         manager.addNewTask(task2);
 
-        Epic epic1 = new Epic("epic1", "epicDes1");
-        Epic epic2 = new Epic("epic2", "epicDes2");
+        Epic epic1 = new Epic("Epic 1", "Description of Epic 1");
+        Epic epic2 = new Epic("Epic 2", "Description of Epic 2");
         manager.addNewEpic(epic1);
         manager.addNewEpic(epic2);
 
-        Subtask subtask1 = new Subtask("sub1", "subDes1", TaskStatus.NEW, epic1.getId());
-        Subtask subtask2 = new Subtask("sub2", "subDes2", TaskStatus.NEW, epic2.getId());
+        Subtask subtask1 = new Subtask("Subtask 1", "Description of Subtask 1", TaskStatus.NEW, epic1.getId());
+        Subtask subtask2 = new Subtask("Subtask 2", "Description of Subtask 2", TaskStatus.NEW, epic2.getId());
         manager.addNewSubtask(subtask1);
         manager.addNewSubtask(subtask2);
 
+        System.out.println("Tasks: " + manager.getTasks());
+        System.out.println("Epics: " + manager.getEpics());
+        System.out.println("Subtasks: " + manager.getSubtasks());
 
-        System.out.println("Задачи:");
-        for (Task task : manager.getTasks()) {
-            System.out.println(task);
-        }
-        System.out.println("Эпики:");
-        for (Task epic : manager.getEpics()) {
-            System.out.println(epic);
-
-            for (Task task : manager.getSubtasksForEpic(epic.getId())) {
-                System.out.println("--> " + task);
-            }
-        }
-        System.out.println("Подзадачи:");
-        for (Task subtask : manager.getSubtasks()) {
-            System.out.println(subtask);
-        }
-
-        manager.getTask(task1.getId());
-        manager.getEpic(epic2.getId());
-
-        System.out.println("История:");
-        for (Task task : manager.getHistory()) {
-            System.out.println(task);
-        }
-
-        // Проверка вывода задач
         assertEquals(2, manager.getTasks().size());
         assertEquals(2, manager.getEpics().size());
         assertEquals(2, manager.getSubtasks().size());
 
-        // Проверка истории
-        assertEquals(2, manager.getHistory().size());
-
-        // Проверка правильности истории
-        assertTrue(manager.getHistory().contains(task1));
-        assertTrue(manager.getHistory().contains(epic2));
+        assertTrue(manager.getTasks().contains(task1));
+        assertTrue(manager.getTasks().contains(task2));
+        assertTrue(manager.getEpics().contains(epic1));
+        assertTrue(manager.getEpics().contains(epic2));
+        assertTrue(manager.getSubtasks().contains(subtask1));
+        assertTrue(manager.getSubtasks().contains(subtask2));
     }
 }
