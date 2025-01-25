@@ -1,26 +1,8 @@
-name: API Tests
+name: Java Tests
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up JDK
-      uses: actions/setup-java@v2
-      with:
-        java-version: '17' # Укажите нужную версию JDK
-
-    - name: Build project
-      run: ./gradlew build # или другой инструмент сборки, например, mvn clean install
-
-    - name: Run tests
-      run: ./gradlew test # команда для запуска тестов
+  build:
+    uses: yandex-praktikum/java-kanban/.github/workflows/api-tests.yml@ci
