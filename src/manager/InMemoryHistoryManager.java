@@ -8,15 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static class Node {
-        Task task;
-        Node prev;
-        Node next;
-
-        Node(Task task) {
-            this.task = task;
-        }
-    }
 
     private Node head;
     private Node tail;
@@ -30,20 +21,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         linkLast(task);
     }
 
-    // Метод для добавления задачи в конец двусвязного списка
-    private void linkLast(Task task) {
-        Node newNode = new Node(task);
-        if (tail == null) {
-            head = newNode;
-            tail = newNode;
-        } else {
-            tail.next = newNode;
-            newNode.prev = tail;
-            tail = newNode;
-        }
-        nodeMap.put(task.getId(), newNode);
-    }
-
     @Override
     public List<Task> getHistory() {
         List<Task> history = new ArrayList<>();
@@ -55,6 +32,13 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         return history; // Возвращаем список задач
+    }
+
+    @Override
+    public void remove(int id) {
+        if (nodeMap.containsKey(id)) {
+            removeNode(nodeMap.get(id));
+        }
     }
 
     private void removeNode(Node node) {
@@ -73,10 +57,28 @@ public class InMemoryHistoryManager implements HistoryManager {
         nodeMap.remove(node.task.getId()); // Удаление мапы
     }
 
-    @Override
-    public void remove(int id) {
-        if (nodeMap.containsKey(id)) {
-            removeNode(nodeMap.get(id));
+    // Метод для добавления задачи в конец двусвязного списка
+    private void linkLast(Task task) {
+        Node newNode = new Node(task);
+        if (tail == null) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
+        }
+        nodeMap.put(task.getId(), newNode);
+    }
+
+    private static class Node {
+        Task task;
+        Node prev;
+        Node next;
+
+        Node(Task task) {
+            this.task = task;
         }
     }
+
 }
