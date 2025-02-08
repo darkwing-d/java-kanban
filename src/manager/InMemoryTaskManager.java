@@ -5,10 +5,7 @@ import task.Subtask;
 import task.Task;
 import task.TaskStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
@@ -32,6 +29,7 @@ public class InMemoryTaskManager implements TaskManager {
         final int id = ++generatorId;
         task.setId(id);
         tasks.put(id, task);
+        historyManager.add(task);
         return id;
     }
 
@@ -70,7 +68,7 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = epics.get(epicId);
 
             if (epic != null) {
-                epic.removeSubtaskId(subtaskId); // уделание id подзадачи из эпика
+                epic.removeSubtaskId(Integer.valueOf(subtaskId));
                 updateStatus(epicId);
             }
 
@@ -124,22 +122,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int id) {
-        Task task = tasks.get(id);
-        historyManager.add(task);
         return tasks.get(id);
     }
 
     @Override
     public Epic getEpic(int id) {
-        Epic epic = epics.get(id);
-        historyManager.add(epic);
         return epics.get(id);
     }
 
     @Override
     public Subtask getSubtask(int id) {
-        Subtask subtask = subtasks.get(id);
-        historyManager.add(subtask);
         return subtasks.get(id);
     }
 
@@ -212,9 +204,12 @@ public class InMemoryTaskManager implements TaskManager {
         return false;
     }
 
-    @Override
-    public boolean deleteTask(int id) {
-        return tasks.remove(id) != null;
+    public boolean deleteTask(int taskId) {
+        Task task = tasks.remove(taskId); // Удаление из основной коллекции задач
+        if (task != null) {
+            historyManager.remove(taskId); // Удаление из истории
+        }
+        return task != null; // Если задача была найдена и удалена
     }
 
     @Override
@@ -231,12 +226,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void updateStatus(int epicId) {
-        Epic epic = epics.get(epicId);
-        if (epic != null) {
-            TaskStatus newStatus = calculateStatus(); // Рассчитываем новый статус
-            epic.setStatus(newStatus); // Обновляем статус эпика
-        }
+    public boolean taskExists(int id) {
+        return tasks.containsKey(id);
     }
 
     private TaskStatus calculateStatus() {
@@ -267,7 +258,11 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public boolean taskExists(int id) {
-        return tasks.containsKey(id);
+    private void updateStatus(int epicId) {
+        Epic epic = epics.get(epicId);
+        if (epic != null) {
+            TaskStatus newStatus = calculateStatus(); // Рассчитываем новый статус
+            epic.setStatus(newStatus); // Обновляем статус эпика
+        }
     }
 }
