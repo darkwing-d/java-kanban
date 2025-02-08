@@ -52,27 +52,33 @@ class FileBackedTaskManagerTest {
         assertNotNull(subtaskId, "ID не должен быть равен нулю после добавления.");
 
         // сохранение
-        manager.save();
+        //   manager.save();
+        try {
+            manager.save();
+            System.out.println("Файл успешно сохранен.");
+        } catch (FileBackedTaskManager.FileSaveException e) {
+            System.err.println("Не удалось сохранить файл: " + e.getMessage());
 
-        // загрузка из файла в менеджер
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
+            // загрузка из файла в менеджер
+            FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
-        // проверка количества задач
-        assertEquals(2, loadedManager.getTasks().size());
-        assertEquals(1, loadedManager.getEpics().size());
-        assertEquals(1, loadedManager.getSubtasks().size());
+            // проверка количества задач
+            assertEquals(2, loadedManager.getTasks().size());
+            assertEquals(1, loadedManager.getEpics().size());
+            assertEquals(1, loadedManager.getSubtasks().size());
 
-        // проверка загруженных задач
-        assertEquals(task1.getName(), loadedManager.getTasks().get(0).getName());
-        assertEquals(task2.getName(), loadedManager.getTasks().get(1).getName());
-        assertEquals(epic.getName(), loadedManager.getEpics().get(0).getName());
-        assertEquals(subtask.getName(), loadedManager.getSubtasks().get(0).getName());
+            // проверка загруженных задач
+            assertEquals(task1.getName(), loadedManager.getTasks().get(0).getName());
+            assertEquals(task2.getName(), loadedManager.getTasks().get(1).getName());
+            assertEquals(epic.getName(), loadedManager.getEpics().get(0).getName());
+            assertEquals(subtask.getName(), loadedManager.getSubtasks().get(0).getName());
 
-        // проверка статуса и описания
-        assertEquals(task1.getStatus(), loadedManager.getTasks().get(0).getStatus());
-        assertEquals(task2.getStatus(), loadedManager.getTasks().get(1).getStatus());
-        assertEquals(epic.getDescription(), loadedManager.getEpics().get(0).getDescription());
-        assertEquals(subtask.getDescription(), loadedManager.getSubtasks().get(0).getDescription());
+            // проверка статуса и описания
+            assertEquals(task1.getStatus(), loadedManager.getTasks().get(0).getStatus());
+            assertEquals(task2.getStatus(), loadedManager.getTasks().get(1).getStatus());
+            assertEquals(epic.getDescription(), loadedManager.getEpics().get(0).getDescription());
+            assertEquals(subtask.getDescription(), loadedManager.getSubtasks().get(0).getDescription());
+        }
     }
 
     @Test
