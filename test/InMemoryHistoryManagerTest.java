@@ -162,5 +162,4 @@ class InMemoryHistoryManagerTest {
         // Проверяем, что история пуста
         assertTrue(taskManager.getHistory().isEmpty());
     }
-
 }
