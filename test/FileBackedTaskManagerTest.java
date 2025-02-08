@@ -52,7 +52,6 @@ class FileBackedTaskManagerTest {
         assertNotNull(subtaskId, "ID не должен быть равен нулю после добавления.");
 
         // сохранение
-        //   manager.save();
         try {
             manager.save();
             System.out.println("Файл успешно сохранен.");
