@@ -70,6 +70,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
+    public boolean updateTask(Task task) {
+        return super.updateTask(task);
+    }
+
+    @Override
+    public boolean updateEpic(Epic epicToUpdate) {
+        return super.updateEpic(epicToUpdate);
+    }
+
+    @Override
+    public boolean updateSubtask(Subtask updatedSubtask) {
+        return super.updateSubtask(updatedSubtask);
+    }
+
+    @Override
     public boolean deleteEpic(int id) {
         return super.deleteEpic(id);
     }
@@ -184,7 +199,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new FileSaveException("Ошибка при сохранении файла: " + e.getMessage(), e);
         }
     }
-    
+
     private String taskToCsvString(Task task) {
         String type = (task instanceof Epic) ? "EPIC" : (task instanceof Subtask) ? "SUBTASK" : "TASK";
         String epicId = (task instanceof Subtask) ? String.valueOf(((Subtask) task).getEpicId()) : "";
