@@ -24,79 +24,91 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public int addNewTask(Task task) {
         int id = super.addNewTask(task);
-        try {
-            save();
-        } catch (FileSaveException e) {
-            throw new RuntimeException(e);
-        }
+        save();
         return id;
     }
 
     @Override
     public int addNewEpic(Epic epic) {
         int id = super.addNewEpic(epic);
-        try {
-            save();
-        } catch (FileSaveException e) {
-            throw new RuntimeException(e);
-        }
+        save();
         return id;
     }
 
     @Override
     public Integer addNewSubtask(Subtask subtask) {
         int id = super.addNewSubtask(subtask);
-        try {
-            save();
-        } catch (FileSaveException e) {
-            throw new RuntimeException(e);
-        }
+        save();
         return id;
     }
 
     @Override
     public void deleteTasks() {
         super.deleteTasks();
+        save();
     }
 
     @Override
     public void deleteEpics() {
         super.deleteEpics();
+        save();
     }
 
     @Override
     public void deleteSubtasks() {
         super.deleteSubtasks();
+        save();
     }
 
     @Override
     public boolean updateTask(Task task) {
-        return super.updateTask(task);
+        boolean updated = super.updateTask(task);
+        if (updated) {
+            save();
+        }
+        return updated;
     }
 
     @Override
     public boolean updateEpic(Epic epicToUpdate) {
-        return super.updateEpic(epicToUpdate);
+        boolean updated = super.updateEpic(epicToUpdate);
+        if (updated) {
+            save();
+        }
+        return updated;
     }
 
     @Override
     public boolean updateSubtask(Subtask updatedSubtask) {
-        return super.updateSubtask(updatedSubtask);
+        boolean updated = super.updateSubtask(updatedSubtask);
+        if (updated) {
+            save();
+        }
+        return updated;
     }
 
     @Override
     public boolean deleteEpic(int id) {
-        return super.deleteEpic(id);
+        boolean deleted = super.deleteEpic(id);
+        if (deleted) {
+            save();
+        }
+        return deleted;
     }
 
     @Override
     public boolean deleteTask(int taskId) {
-        return super.deleteTask(taskId);
+        boolean deleted = super.deleteTask(taskId);
+        if (deleted) {
+            save();
+        }
+        return deleted;
     }
 
     @Override
     public void deleteSubtask(int subtaskId) {
         super.deleteSubtask(subtaskId);
+        save();
     }
 
     public String toString(Task task) {
@@ -169,23 +181,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 if (line.trim().isEmpty() || line.startsWith("#")) {
                     continue;
                 }
-                try {
-                    Task task = fromString(line);
-                    if (task instanceof Epic) {
-                        manager.addNewEpic((Epic) task);
-                    } else if (task instanceof Subtask) {
-                        manager.addNewSubtask((Subtask) task);
-                    } else {
-                        manager.addNewTask(task);
-                    }
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Пропуск строки: " + line);
+                Task task = fromString(line);
+                if (task instanceof Epic) {
+                    manager.addNewEpic((Epic) task);
+                } else if (task instanceof Subtask) {
+                    manager.addNewSubtask((Subtask) task);
+                } else {
+                    manager.addNewTask(task);
                 }
             }
         } catch (IOException e) {
             System.out.println("Ошибка загрузки задачи из файла: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка при обработке задачи: " + e.getMessage());
         }
-
         return manager;
     }
 
@@ -237,18 +246,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         allTasks.addAll(getEpics());
         allTasks.addAll(getSubtasks());
         return allTasks;
-    }
-
-    public static class TaskFormatException extends IllegalArgumentException {
-        public TaskFormatException(String message) {
-            super(message);
-        }
-    }
-
-    public static class FileSaveException extends Exception {
-        public FileSaveException(String message, Throwable cause) {
-            super(message, cause);
-        }
     }
 }
 
