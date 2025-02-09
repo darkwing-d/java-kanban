@@ -88,21 +88,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public boolean updateTask(Task task) {
-        return super.updateTask(task);
-    }
-
-    @Override
-    public boolean updateEpic(Epic epicToUpdate) {
-        return super.updateEpic(epicToUpdate);
-    }
-
-    @Override
-    public boolean updateSubtask(Subtask updatedSubtask) {
-        return super.updateSubtask(updatedSubtask);
-    }
-
-    @Override
     public boolean deleteEpic(int id) {
         boolean deleted = super.deleteEpic(id);
         if (deleted) {
@@ -121,9 +106,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void deleteSubtask(int subtaskId) {
-        super.deleteSubtask(subtaskId);
-        save();
+    public boolean deleteSubtask(int subtaskId) {
+        boolean deleted = super.deleteSubtask(subtaskId);
+        if (deleted) {
+            save();
+        }
+        return deleted;
     }
 
     public String toString(Task task) {
@@ -135,7 +123,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 '}';
     }
 
-    public static Task fromString(String value) {
+    private static Task fromString(String value) {
         String[] parts = value.split(",");
 
         if (parts.length < 5) {
@@ -213,7 +201,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
-    public void save() throws FileSaveException {
+    public void saveTasks() {
+        save(); // Вызов приватного метода внутри публичного метода для прохождения теста
+    }
+
+    private void save() {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename), StandardCharsets.UTF_8)) {
             for (Task task : getAllTasks()) {
                 writer.write(taskToCsvString(task));

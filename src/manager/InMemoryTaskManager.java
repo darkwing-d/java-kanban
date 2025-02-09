@@ -18,6 +18,14 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = Managers.getDefaultHistory();
     }
 
+    protected int generateId() {
+        return ++generatorId;
+    }
+
+    public int getGeneratorId() {
+        return generatorId;
+    }
+
     @Override
     public List<Task> getTasks() {
         List<Task> taskArrayList = new ArrayList<>(tasks.values());
@@ -26,7 +34,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int addNewTask(Task task) {
-        final int id = ++generatorId;
+        final int id = generateId();
         task.setId(id);
         tasks.put(id, task);
         historyManager.add(task);
@@ -35,7 +43,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int addNewEpic(Epic epic) {
-        final int id = ++generatorId;
+        final int id = generateId();
         epic.setId(id);
         epics.put(id, epic);
         return id;
@@ -52,7 +60,7 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         }
 
-        final int id = ++generatorId;
+        final int id = generateId();
         subtask.setId(id);
         subtasks.put(id, subtask);
         epics.get(subtask.getEpicId()).addSubtaskId(id);
@@ -213,7 +221,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteSubtask(int subtaskId) {
+    public boolean deleteSubtask(int subtaskId) {
         Subtask subtask = subtasks.remove(subtaskId);
         if (subtask != null) {
             int epicId = subtask.getEpicId();
@@ -224,14 +232,11 @@ public class InMemoryTaskManager implements TaskManager {
                 updateStatus(epicId);
             }
         }
+        return subtask != null;
     }
 
-    private void updateStatus(int epicId) {
-        Epic epic = epics.get(epicId);
-        if (epic != null) {
-            TaskStatus newStatus = calculateStatus(); // Рассчитываем новый статус
-            epic.setStatus(newStatus); // Обновляем статус эпика
-        }
+    public boolean taskExists(int id) {
+        return tasks.containsKey(id);
     }
 
     private TaskStatus calculateStatus() {
@@ -262,7 +267,11 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public boolean taskExists(int id) {
-        return tasks.containsKey(id);
+    private void updateStatus(int epicId) {
+        Epic epic = epics.get(epicId);
+        if (epic != null) {
+            TaskStatus newStatus = calculateStatus(); // Рассчитываем новый статус
+            epic.setStatus(newStatus); // Обновляем статус эпика
+        }
     }
 }
