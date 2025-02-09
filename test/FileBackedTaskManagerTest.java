@@ -52,7 +52,11 @@ class FileBackedTaskManagerTest {
         assertNotNull(subtaskId, "ID не должен быть равен нулю после добавления.");
 
         // сохранение
+<<<<<<< HEAD
         manager.saveTasks();
+=======
+        manager.save();
+>>>>>>> 73b1b4c1663159c3ca0c9ee71e4fa3231d73cd15
 
         // загрузка из файла в менеджер
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
