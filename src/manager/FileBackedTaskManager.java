@@ -123,6 +123,52 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 '}';
     }
 
+    public static FileBackedTaskManager loadFromFile(File file) {
+        FileBackedTaskManager manager = new FileBackedTaskManager(file.getAbsolutePath());
+
+        if (!file.exists() || !file.canRead()) {
+            System.out.println("Указанного файла нет или он не может быть прочитан: " + file.getAbsolutePath());
+            return manager;
+        }
+
+        try {
+            List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+            for (String line : lines) {
+                if (line.trim().isEmpty() || line.startsWith("#")) {
+                    continue;
+                }
+                Task task = fromString(line);
+                if (task instanceof Epic) {
+                    manager.addNewEpic((Epic) task);
+                } else if (task instanceof Subtask) {
+                    manager.addNewSubtask((Subtask) task);
+                } else {
+                    manager.addNewTask(task);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Ошибка загрузки задачи из файла: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка при обработке задачи: " + e.getMessage());
+        }
+        return manager;
+    }
+
+    public void saveTasks() {
+        save(); // Вызов приватного метода внутри публичного метода для прохождения теста
+    }
+
+    private void save() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename), StandardCharsets.UTF_8)) {
+            for (Task task : getAllTasks()) {
+                writer.write(taskToCsvString(task));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            throw new FileSaveException("Ошибка при сохранении файла: " + e.getMessage(), e);
+        }
+    }
+
     private static Task fromString(String value) {
         String[] parts = value.split(",");
 
@@ -167,52 +213,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             default:
                 throw new TaskFormatException("Неизвестный тип задачи: " + type);
-        }
-    }
-
-    public static FileBackedTaskManager loadFromFile(File file) {
-        FileBackedTaskManager manager = new FileBackedTaskManager(file.getAbsolutePath());
-
-        if (!file.exists() || !file.canRead()) {
-            System.out.println("Указанного файла нет или он не может быть прочитан: " + file.getAbsolutePath());
-            return manager;
-        }
-
-        try {
-            List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-            for (String line : lines) {
-                if (line.trim().isEmpty() || line.startsWith("#")) {
-                    continue;
-                }
-                Task task = fromString(line);
-                if (task instanceof Epic) {
-                    manager.addNewEpic((Epic) task);
-                } else if (task instanceof Subtask) {
-                    manager.addNewSubtask((Subtask) task);
-                } else {
-                    manager.addNewTask(task);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Ошибка загрузки задачи из файла: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка при обработке задачи: " + e.getMessage());
-        }
-        return manager;
-    }
-
-    public void saveTasks() {
-        save(); // Вызов приватного метода внутри публичного метода для прохождения теста
-    }
-
-    private void save() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename), StandardCharsets.UTF_8)) {
-            for (Task task : getAllTasks()) {
-                writer.write(taskToCsvString(task));
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            throw new FileSaveException("Ошибка при сохранении файла: " + e.getMessage(), e);
         }
     }
 
