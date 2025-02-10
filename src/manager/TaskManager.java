@@ -45,7 +45,7 @@ public interface TaskManager {
 
     boolean deleteTask(int id);
 
-    void deleteSubtask(int subtaskId);
+    boolean deleteSubtask(int subtaskId);
 
     List<Task> getHistory();
 
