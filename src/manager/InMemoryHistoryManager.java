@@ -15,6 +15,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
+        if (task == null) {
+            throw new IllegalArgumentException("Задача не должна быть null");
+        }
         if (nodeMap.containsKey(task.getId())) {
             removeNode(nodeMap.get(task.getId()));
         }
@@ -38,6 +41,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void remove(int id) {
         if (nodeMap.containsKey(id)) {
             removeNode(nodeMap.get(id));
+            nodeMap.remove(id);
         }
     }
 
@@ -60,6 +64,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     // Метод для добавления задачи в конец двусвязного списка
     private void linkLast(Task task) {
         Node newNode = new Node(task);
+        nodeMap.put(task.getId(), newNode);
         if (tail == null) {
             head = newNode;
             tail = newNode;
@@ -68,7 +73,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             newNode.prev = tail;
             tail = newNode;
         }
-        nodeMap.put(task.getId(), newNode);
     }
 
     private static class Node {
@@ -82,3 +86,4 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
 }
+
