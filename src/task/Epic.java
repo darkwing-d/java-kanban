@@ -1,5 +1,6 @@
 package task;
 
+import com.google.gson.annotations.SerializedName;
 import manager.InMemoryTaskManager;
 
 import java.time.Duration;
@@ -10,26 +11,27 @@ import java.util.List;
 
 public class Epic extends Task {
     private List<Integer> subtaskIds = new ArrayList<>();
-    private Duration duration; // Сумма продолжительностей подзадач
-    private LocalDateTime startTime; // Время начала самой ранней подзадачи
+    private Duration epicDuration; // Сумма продолжительностей подзадач
+    @SerializedName("epicStartTime")
+    private LocalDateTime startTime; // поле для JSON
     private LocalDateTime endTime; // Время завершения самой поздней подзадачи
 
     public Epic(String name, String description) {
         super(name, description, TaskStatus.NEW, Duration.ZERO, null); // статус эпика при создании
-        this.duration = Duration.ZERO; // Начальная продолжительность
+        this.epicDuration = Duration.ZERO; // Начальная продолжительность
         this.startTime = null; // Начальное значение для startTime
         this.endTime = null; // Начальное значение для endTime
     }
 
     public void updateCalculatedFields(InMemoryTaskManager taskManager) {
-        duration = Duration.ZERO;
+        epicDuration = Duration.ZERO;
         startTime = null;
         endTime = null;
 
         for (Integer subtaskId : subtaskIds) {
             Subtask subtask = taskManager.getSubtask(subtaskId);
             if (subtask != null) {
-                duration = duration.plus(subtask.getDuration());
+                epicDuration = epicDuration.plus(subtask.getEpicDuration());
 
                 if (startTime == null || subtask.getStartTime().isBefore(startTime)) {
                     startTime = subtask.getStartTime();
@@ -48,8 +50,8 @@ public class Epic extends Task {
     }
 
     @Override
-    public Duration getDuration() {
-        return duration;
+    public Duration getEpicDuration() {
+        return epicDuration;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class Epic extends Task {
     public void clearSubtasks() {
         subtaskIds.clear();
         // Обнуляем данные эпика, если подзадач больше нет
-        duration = Duration.ZERO;
+        epicDuration = Duration.ZERO;
         startTime = null;
         endTime = null;
     }
@@ -84,17 +86,30 @@ public class Epic extends Task {
         if (!super.equals(object)) return false;
         Epic epic = (Epic) object;
         return Objects.equals(subtaskIds, epic.subtaskIds) &&
-                Objects.equals(duration, epic.duration) &&
+                Objects.equals(epicDuration, epic.epicDuration) &&
                 Objects.equals(startTime, epic.startTime) &&
                 Objects.equals(endTime, epic.endTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), subtaskIds, duration, startTime, endTime);
+        return Objects.hash(super.hashCode(), subtaskIds, epicDuration, startTime, endTime);
     }
 
     public void setSubtaskIds(List<Integer> subtaskIds) {
         this.subtaskIds = subtaskIds;
+    }
+
+    public void setEpicDuration(Duration epicDuration) {
+        this.epicDuration = epicDuration;
+    }
+
+    @Override
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 }

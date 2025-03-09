@@ -246,7 +246,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 task.getName(),
                 task.getStatus().toString(),
                 task.getDescription(),
-                task.getDuration() != null ? task.getDuration().toString() : "",
+                task.getEpicDuration() != null ? task.getEpicDuration().toString() : "",
                 task.getStartTime() != null ? task.getStartTime().toString() : "",
                 epicId);
     }
@@ -267,7 +267,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 subtask.getName(),
                 subtask.getStatus().toString(),
                 subtask.getDescription(),
-                subtask.getDuration() != null ? subtask.getDuration().toString() : "",
+                subtask.getEpicDuration() != null ? subtask.getEpicDuration().toString() : "",
                 subtask.getStartTime() != null ? subtask.getStartTime().toString() : "",
                 String.valueOf(subtask.getEpicId()));
     }

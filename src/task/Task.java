@@ -83,7 +83,7 @@ public class Task {
         return status;
     }
 
-    public Duration getDuration() {
+    public Duration getEpicDuration() {
         return duration;
     }
 

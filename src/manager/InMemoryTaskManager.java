@@ -8,6 +8,7 @@ import task.TaskStatus;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
@@ -33,7 +34,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public List<Task> getPrioritizedTasks() {
-        return List.copyOf(prioritizedTasks);
+        return tasks.values().stream()
+                .sorted(Comparator.comparing(Task::getStartTime))
+                .collect(Collectors.toList());
     }
 
     public TaskStatus getEpicStatus(int epicId) {
@@ -387,7 +390,7 @@ public class InMemoryTaskManager implements TaskManager {
     //метод для определения пересечения по времени
     private boolean crossingInTime(Task newTask) {
         for (Task existingTask : tasks.values()) {
-            if (overlaps(existingTask, newTask)) {
+            if (existingTask.getId() != newTask.getId() && overlaps(existingTask, newTask)) {
                 return true;
             }
         }
@@ -395,12 +398,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private boolean overlaps(Task task1, Task task2) {
+        if (task1 == null || task2 == null || task1.getStartTime() == null || task2.getStartTime() == null) {
+            return false;
+        }
+
         LocalDateTime start1 = task1.getStartTime();
-        LocalDateTime end1 = start1.plus(task1.getDuration());
+        LocalDateTime end1 = start1.plus(task1.getEpicDuration());
 
         LocalDateTime start2 = task2.getStartTime();
-        LocalDateTime end2 = start2.plus(task2.getDuration());
+        LocalDateTime end2 = start2.plus(task2.getEpicDuration());
 
-        return (start1.isBefore(end2) && end1.isAfter(start2));
+        return (start1.isBefore(end2) && start2.isBefore(end1));
     }
 }
