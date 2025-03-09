@@ -84,8 +84,13 @@ class FileBackedTaskManagerTest {
         assertEquals(subtask.getDescription(), loadedManager.getSubtasks().get(0).getDescription());
 
         // Проверка продолжительности и времени начала
+<<<<<<< HEAD
         assertEquals(task1.getEpicDuration(), loadedManager.getTasks().get(0).getEpicDuration());
         assertEquals(task2.getEpicDuration(), loadedManager.getTasks().get(1).getEpicDuration());
+=======
+        assertEquals(task1.getDuration(), loadedManager.getTasks().get(0).getDuration());
+        assertEquals(task2.getDuration(), loadedManager.getTasks().get(1).getDuration());
+>>>>>>> ed885c911858f8f895bf6947c034756162fc4052
         assertEquals(task1.getStartTime(), loadedManager.getTasks().get(0).getStartTime());
         assertEquals(task2.getStartTime(), loadedManager.getTasks().get(1).getStartTime());
         assertEquals(subtask.getStartTime(), loadedManager.getSubtasks().get(0).getStartTime()); // Проверяем время начала подзадачи

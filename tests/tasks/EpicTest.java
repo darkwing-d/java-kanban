@@ -27,7 +27,11 @@ public class EpicTest {
         assertEquals("Epic Name", epic.getName());
         assertEquals("Epic Description", epic.getDescription());
         assertEquals(TaskStatus.NEW, epic.getStatus());
+<<<<<<< HEAD
         assertEquals(Duration.ZERO, epic.getEpicDuration());
+=======
+        assertEquals(Duration.ZERO, epic.getDuration());
+>>>>>>> ed885c911858f8f895bf6947c034756162fc4052
         assertNull(epic.getStartTime());
         assertNull(epic.getEndTime());
         assertTrue(epic.getSubtaskIds().isEmpty(), "В новом эпике не должно быть подзадач");
@@ -49,7 +53,11 @@ public class EpicTest {
         assertEquals(description, subtask.getDescription(), "Описание должно совпадать");
         assertEquals(status, subtask.getStatus(), "Статус должен совпадать");
         assertEquals(epicId, subtask.getEpicId(), "ID эпика подзадачи должен совпадать");
+<<<<<<< HEAD
         assertEquals(duration, subtask.getEpicDuration(), "Длительность подзадачи должна совпадать");
+=======
+        assertEquals(duration, subtask.getDuration(), "Длительность подзадачи должна совпадать");
+>>>>>>> ed885c911858f8f895bf6947c034756162fc4052
         assertEquals(startTime, subtask.getStartTime(), "Начало подзадачи должно совпадать");
     }
 
@@ -86,7 +94,11 @@ public class EpicTest {
         // Обновляем расчётные поля эпика
         epic.updateCalculatedFields(taskManager);
 
+<<<<<<< HEAD
         assertEquals(Duration.ofHours(5), epic.getEpicDuration(), "Длительность должна быть 5 часов");
+=======
+        assertEquals(Duration.ofHours(5), epic.getDuration(), "Длительность должна быть 5 часов");
+>>>>>>> ed885c911858f8f895bf6947c034756162fc4052
         assertEquals(LocalDateTime.of(2023, 10, 1, 10, 0),
                 epic.getStartTime(), "Время начала должно совпадать с самой ранней подзадачей");
         assertEquals(LocalDateTime.of(2023, 10, 2, 15, 0),
